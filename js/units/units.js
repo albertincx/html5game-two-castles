@@ -8,7 +8,7 @@ class Unit {
         this.fighting_with = [];
         this.shooting_with = [];
         this.default_speed = 0;
-        this.health = 0;
+        this.default_health = 0;
         this.damage_to_all = false;
         this.path = [];
         this.is_busy = false;
@@ -28,8 +28,24 @@ class Unit {
                 }
             }
             game.context.drawImage(unit, this.x, this.y, this.width, this.height);
-            game.context.fillText(this.health, this.x + 20, this.y - 5);
+            //game.context.fillText(this.health, this.x + 20, this.y - 5);
+            this.drawScrollbar();
         }
+    }
+
+    drawScrollbar () {
+        let width = this.default_health,
+            height = 7,
+            current_width = width * this.health / this.default_health,
+            pos_offset = (this.default_health - this.width) / 2;
+
+        // Draw the background
+        game.context.fillStyle = '#ca0d0d';
+        game.context.fillRect(this.x - pos_offset, this.y - 15, width, height);
+        // Draw the fill
+        game.context.fillStyle = '#57d83a';
+        game.context.fillRect(this.x - pos_offset, this.y - 15, current_width, height);
+        game.context.fillStyle = '#000';
     }
 
     dealDamage(from_unit, to_unit) {
@@ -148,9 +164,7 @@ class Unit {
             //game.addScore(2, 10);
         }
     }
-    specialAction(i) {
-
-    }
+    specialAction(i) {}
 }
 
 class Knight extends Unit {
@@ -163,10 +177,11 @@ class Knight extends Unit {
         this.default_speed = 15;
         this.damage = 5;
         this.win_price = 5;
-        this.health = 50;
+        this.default_health = 50;
+        this.health = this.default_health;
         this.t = 0.01;
         this.t_param = 0.055;
-        this.y_param_a = 330;
+        this.y_param_a = 330 + Math.floor(Math.random() * 15) + 1;
         this.y_param_b = 65;
 
         this.src = 'images/knight.png';
@@ -187,7 +202,8 @@ class Woodcutter extends Unit{
         this.speed_wearing = this.default_speed/2;
         this.speed_cutting = 100;
         this.damage = 1;
-        this.health = 10;
+        this.default_health = 10;
+        this.health = this.default_health;
 
         this.path = [];
 
@@ -196,7 +212,7 @@ class Woodcutter extends Unit{
 
         this.t = 0.01;
         this.t_param = 0.007;
-        this.y_param_a = 350 + Math.floor(Math.random() * 15) + 1  ;
+        this.y_param_a = 350 + Math.floor(Math.random() * 15) + 1;
         this.y_param_b = 55;
 
         this.is_busy = false;
@@ -252,7 +268,7 @@ class Archer extends Unit {
         super();
 
         this.src = "images/archer.png";
-        this.width = 100;
+        this.width = 47;
         this.height = 75;
         this.speed = 3;
         this.default_speed = 3;
@@ -261,10 +277,11 @@ class Archer extends Unit {
         this.cooldown_attack = 200;
         this.default_cooldown_attack = 200;
         this.win_price = 5;
-        this.health = 30;
+        this.default_health = 30;
+        this.health = this.default_health;
         this.t = 0.01;
         this.t_param = 0.01;
-        this.y_param_a = 330;
+        this.y_param_a = 330 + Math.floor(Math.random() * 15) + 1;
         this.y_param_b = 65;
     }
 

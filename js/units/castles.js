@@ -28,8 +28,6 @@ class Castles {
             height = 15,
             current_width = width * this.health / this.default_health;
 
-        let percent = this.health / this.default_health * 100;
-
         // Draw the background
         game.context.fillStyle = '#ca0d0d';
         game.context.fillRect(this.x + 10, this.y - 30, width, height);
