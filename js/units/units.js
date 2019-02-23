@@ -195,8 +195,8 @@ class Woodcutter extends Unit{
         this.src = "images/woodcutter.png";
         this.src_carry = "images/woodcutter_carry.png";
         this.id = this.generateUniqueId();
-        this.width = 50;
-        this.height = 50;
+        this.width = 29;
+        this.height = 40;
         this.default_speed = 2;
         this.speed = this.default_speed;
         this.speed_wearing = this.default_speed/2;
@@ -268,8 +268,8 @@ class Archer extends Unit {
         super();
 
         this.src = "images/archer.png";
-        this.width = 47;
-        this.height = 75;
+        this.width = 35;
+        this.height = 55;
         this.speed = 3;
         this.default_speed = 3;
         this.damage = 5;
@@ -281,8 +281,8 @@ class Archer extends Unit {
         this.health = this.default_health;
         this.t = 0.01;
         this.t_param = 0.01;
-        this.y_param_a = 330 + Math.floor(Math.random() * 15) + 1;
-        this.y_param_b = 65;
+        this.y_param_a = 350 + Math.floor(Math.random() * 15) + 1;
+        this.y_param_b = 45;
     }
 
     specialAction(i) {

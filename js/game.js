@@ -39,7 +39,7 @@ let game = {
             cloud.draw(cloud);
         });
 
-        // Draw castles
+        // Castles
         game.castle.draw();
         game.castle2.draw();
 
@@ -106,8 +106,8 @@ window.addEventListener("load", function() {
         woodcutter.path = [];
         woodcutter.x = 900;
         woodcutter.player = 2;
-        woodcutter.speed = -2;
-        woodcutter.default_speed = -2;
+        woodcutter.speed = -woodcutter.speed;
+        woodcutter.default_speed = -woodcutter.default_speed;
         woodcutter.fighting_with = [];
         woodcutter.src = 'images/woodcutter2.png';
 
@@ -119,8 +119,8 @@ window.addEventListener("load", function() {
         let knight = new Knight();
         knight.x = 900;
         knight.player = 2;
-        knight.speed = -15;
-        knight.default_speed = -15;
+        knight.speed = -knight.speed;
+        knight.default_speed = -knight.default_speed;
         knight.fighting_with = [];
         knight.src = 'images/knight2.png';
         game.stage.units[knight.id] = knight;
@@ -131,10 +131,10 @@ window.addEventListener("load", function() {
         archer.x = 900;
         archer.src = "images/archer2.png";
         archer.player = 2;
-        archer.speed = -3;
-        archer.default_speed = -3;
+        archer.speed = -archer.speed;
+        archer.default_speed = -archer.default_speed;
         archer.shooting_with = [];
-        archer.attack_distance = -500;
+        archer.attack_distance = -archer.attack_distance;
         game.stage.units[archer.id] = archer;
     };
 
