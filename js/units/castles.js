@@ -6,7 +6,7 @@ class Castles {
         this.height = 193;
         this.default_health = 100;
         this.health = this.default_health;
-        this.score = 0;
+        this.gold = 0;
         this.src = "images/castle.png";
 
         this.draw();
@@ -19,7 +19,7 @@ class Castles {
 
         game.context.font = "20pt Arial";
         //game.context.fillText("health: " + this.health, this.x, this.y - 50);
-        game.context.fillText("score: " + this.score, this.x + 10, 30);
+        game.context.fillText("gold: " + this.gold, this.x + 10, 30);
         this.drawScrollbar();
     }
 

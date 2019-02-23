@@ -2,7 +2,11 @@ let game = {
     settings: {
         width: 1024,
         height: 568,
-        trees_max: 3
+        trees_max: 3,
+        idle_gold_cooldown_default: 400,
+        idle_gold_cooldown: 400,
+        idle_gold: 5,
+        init_gold: 150,
     },
     stage: {
         units: [],
@@ -25,6 +29,10 @@ let game = {
         // Castles
         game.castle = new Castle();
         game.castle2 = new Castle2();
+
+        // Init gold
+        game.changeGold(1, game.settings.init_gold);
+        game.changeGold(2, game.settings.init_gold);
 
         game.drawingLoop();
     },
@@ -65,20 +73,41 @@ let game = {
             requestAnimationFrame(game.drawingLoop);
         }
 
+        --game.settings.idle_gold_cooldown;
+        if (game.settings.idle_gold_cooldown <= 0) {
+            game.settings.idle_gold_cooldown = game.settings.idle_gold_cooldown_default;
+            game.changeGold(1, game.settings.idle_gold);
+            game.changeGold(2, game.settings.idle_gold);
+        }
+
         game.context.fillText("Total units: " + Object.keys(game.stage.units).length, 330, 30);
     },
     growTree: function () {
         let tree = new Tree();
         this.stage.trees.push(tree);
     },
-    drawClouds: function() {
-
-    },
-    addScore(player, point) {
+    changeGold(player, gold) {
         if (player === 1) {
-            game.castle.score += parseInt(point);
+            game.castle.gold += parseInt(gold);
         } else {
-            game.castle2.score += parseInt(point);
+            game.castle2.gold += parseInt(gold);
+        }
+    },
+    checkGold(player, gold) {
+        let remain_gold = game.castle.gold;
+        if (player === 2) {
+            remain_gold = game.castle2.gold;
+        }
+        if (remain_gold >= gold) {
+            return true;
+        }
+        console.log('Not enough gold');
+        return false;
+    },
+    hireUnit(unit) {
+        if (game.checkGold(unit.player, unit.cost)) {
+            game.stage.units[unit.id] = unit;
+            game.changeGold(unit.player, -unit.cost)
         }
     }
 };
@@ -88,17 +117,15 @@ window.addEventListener("load", function() {
     document.getElementById('button_01').onclick = function() {
         let woodcutter = new Woodcutter();
         woodcutter.path = [];
-        game.stage.units[woodcutter.id] = woodcutter;
+        game.hireUnit(woodcutter);
     };
 
     document.getElementById('button_02').onclick = function() {
-        let knight = new Knight();
-        game.stage.units[knight.id] = knight;
+        game.hireUnit(new Knight());
     };
 
     document.getElementById('button_03').onclick = function() {
-        let archer = new Archer();
-        game.stage.units[archer.id] = archer;
+        game.hireUnit(new Archer());
     };
 
     document.getElementById('button_04').onclick = function() {
@@ -108,11 +135,9 @@ window.addEventListener("load", function() {
         woodcutter.player = 2;
         woodcutter.speed = -woodcutter.speed;
         woodcutter.default_speed = -woodcutter.default_speed;
-        woodcutter.fighting_with = [];
+        //woodcutter.fighting_with = [];
         woodcutter.src = 'images/woodcutter2.png';
-
-        game.stage.units[woodcutter.id] = woodcutter;
-        console.log(game.stage.units);
+        game.hireUnit(woodcutter);
     };
 
     document.getElementById('button_05').onclick = function() {
@@ -121,9 +146,9 @@ window.addEventListener("load", function() {
         knight.player = 2;
         knight.speed = -knight.speed;
         knight.default_speed = -knight.default_speed;
-        knight.fighting_with = [];
+        //knight.fighting_with = [];
         knight.src = 'images/knight2.png';
-        game.stage.units[knight.id] = knight;
+        game.hireUnit(knight);
     };
 
     document.getElementById('button_06').onclick = function() {
@@ -131,15 +156,14 @@ window.addEventListener("load", function() {
         archer.x = 900;
         archer.src = "images/archer2.png";
         archer.player = 2;
-        archer.speed = -archer.speed;
         archer.default_speed = -archer.default_speed;
-        archer.shooting_with = [];
+        archer.speed = archer.default_speed;
+        //archer.shooting_with = [];
         archer.attack_distance = -archer.attack_distance;
-        game.stage.units[archer.id] = archer;
+        game.hireUnit(archer);
     };
 
     document.addEventListener("keydown", function(event) {
-        console.log(event.which);
         if(event.which === 81) {
             document.getElementById('button_01').click();
         }

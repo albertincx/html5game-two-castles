@@ -12,6 +12,7 @@ class Unit {
         this.damage_to_all = false;
         this.path = [];
         this.is_busy = false;
+        this.cost = 10;
 
         this.draw();
     }
@@ -22,7 +23,7 @@ class Unit {
             unit.src = this.src;
             if (!this.fighting_with.length && !this.shooting_with.length && !this.is_busy) {
                 if (!this.fighting_with.length) { //this.x < 900 &&
-                    this.x = parseInt(this.x) + this.default_speed;
+                    this.x = this.x + this.default_speed;
                     this.t += this.t_param;
                     this.y = this.y_param_a + (Math.sin(this.t) * this.y_param_b);
                 }
@@ -131,7 +132,7 @@ class Unit {
                     delete game.stage.units[self.id];
                     this.removeBusyWith(self.id);
 
-                    game.addScore(busy_unit.player, self.win_price);
+                    game.changeGold(busy_unit.player, self.win_price);
                 }
 
                 if (busy_unit.health <= 0) { // typeof busy_unit.health !== "undefined" &&
@@ -140,14 +141,13 @@ class Unit {
                     delete game.stage.units[busy_unit.id];
                     this.removeBusyWith(busy_unit.id);
 
-                    game.addScore(self.player, busy_unit.win_price);
+                    game.changeGold(self.player, busy_unit.win_price);
                 }
             }
         }
 
         // Collision with castles
         if (this.player === 1 && this.x - (this.width / 2) > (game.castle2.x - game.castle2.width / 2)) {
-            console.log('Collision by unit: knight with castle 2: '+game.stage.units[this.id].health);
             game.castle2.health -= this.damage;
             this.removeBusyWith(this.id);
             delete game.stage.units[this.id];
@@ -156,7 +156,6 @@ class Unit {
         }
 
         if (this.player === 2 && this.x + (this.width / 2) < (game.castle.x + game.castle.width / 2)) {
-            console.log('Collision by unit: knight with castle 1: '+game.stage.units[this.id].health);
             game.castle.health -= this.damage;
             this.removeBusyWith(this.id);
             delete game.stage.units[this.id];
@@ -171,18 +170,20 @@ class Knight extends Unit {
     constructor() {
         super();
 
-        this.width = 100;
-        this.height = 75;
-        this.speed = 15;
-        this.default_speed = 15;
-        this.damage = 5;
-        this.win_price = 5;
+        this.width = 37;
+        this.height = 50;
         this.default_health = 50;
         this.health = this.default_health;
-        this.t = 0.01;
-        this.t_param = 0.055;
+        this.damage = 10;
+        this.default_speed = 1.5;
+        this.speed = this.default_speed;
+        this.default_cooldown_attack = 100;
+        this.cooldown_attack = this.default_cooldown_attack;
+        this.win_price = 5;
+        this.t = 0.005;
+        this.t_param = 0.0055;
         this.y_param_a = 330 + Math.floor(Math.random() * 15) + 1;
-        this.y_param_b = 65;
+        this.y_param_b = 55;
 
         this.src = 'images/knight.png';
     }
@@ -197,18 +198,20 @@ class Woodcutter extends Unit{
         this.id = this.generateUniqueId();
         this.width = 29;
         this.height = 40;
-        this.default_speed = 2;
-        this.speed = this.default_speed;
-        this.speed_wearing = this.default_speed/2;
-        this.speed_cutting = 100;
-        this.damage = 1;
         this.default_health = 10;
         this.health = this.default_health;
+        this.damage = 3;
+        this.default_speed = 2;
+        this.speed = this.default_speed;
+        this.default_cooldown_attack = 50;
+        this.cooldown_attack = this.default_cooldown_attack;
+        this.speed_wearing = this.default_speed/2;
+        this.speed_cutting = 100;
 
         this.path = [];
 
         this.win_price = 1;
-        this.tree_score = 15;
+        this.tree_gold = 15;
 
         this.t = 0.01;
         this.t_param = 0.007;
@@ -236,7 +239,6 @@ class Woodcutter extends Unit{
                     ) {
                         self.is_busy = true;
                         self.damage = 0;
-                        //console.log('collision with tree');
                         game.stage.trees.splice(index, 1);
                         self.path.reverse();
                     }
@@ -256,7 +258,7 @@ class Woodcutter extends Unit{
                     // Returned to castle
                     this.removeBusyWith(self.id);
                     delete game.stage.units[self.id];
-                    game.addScore(self.player, self.tree_score);
+                    game.changeGold(self.player, self.tree_gold);
                 }
             }
         }
@@ -270,19 +272,19 @@ class Archer extends Unit {
         this.src = "images/archer.png";
         this.width = 35;
         this.height = 55;
-        this.speed = 3;
-        this.default_speed = 3;
-        this.damage = 5;
-        this.attack_distance = 500;
-        this.cooldown_attack = 200;
-        this.default_cooldown_attack = 200;
-        this.win_price = 5;
         this.default_health = 30;
         this.health = this.default_health;
+        this.damage = 5;
+        this.default_speed = 1.2;
+        this.speed = this.default_speed;
+        this.attack_distance = 300;
+        this.default_cooldown_attack = 200;
+        this.cooldown_attack = this.default_cooldown_attack;
+        this.win_price = 5;
         this.t = 0.01;
-        this.t_param = 0.01;
-        this.y_param_a = 350 + Math.floor(Math.random() * 15) + 1;
-        this.y_param_b = 45;
+        this.t_param = 0.0045;
+        this.y_param_a = 340 + Math.floor(Math.random() * 15) + 1;
+        this.y_param_b = 35;
     }
 
     specialAction(i) {
@@ -354,7 +356,6 @@ class Tree {
         let width = tree.width,
             height = tree.height;
         if (tree.time_to_grow > 0 && !tree.has_grown) {
-            //console.log('test');
             width = width/100 * (100 - tree.time_to_grow);
             height = height/100 * (100 - tree.time_to_grow);
             tree.time_to_grow -= tree.growth_rate;
