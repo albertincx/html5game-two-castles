@@ -136,7 +136,7 @@ window.addEventListener("load", function() {
         woodcutter.speed = -woodcutter.speed;
         woodcutter.default_speed = -woodcutter.default_speed;
         //woodcutter.fighting_with = [];
-        woodcutter.src = 'images/woodcutter2.png';
+        woodcutter.src = 'images/units/woodcutter2.png';
         game.hireUnit(woodcutter);
     };
 
@@ -147,14 +147,14 @@ window.addEventListener("load", function() {
         knight.speed = -knight.speed;
         knight.default_speed = -knight.default_speed;
         //knight.fighting_with = [];
-        knight.src = 'images/knight2.png';
+        knight.src = 'images/units/knight2.png';
         game.hireUnit(knight);
     };
 
     document.getElementById('button_06').onclick = function() {
         let archer = new Archer();
         archer.x = 900;
-        archer.src = "images/archer2.png";
+        archer.src = "images/units/archer2.png";
         archer.player = 2;
         archer.default_speed = -archer.default_speed;
         archer.speed = archer.default_speed;

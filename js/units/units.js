@@ -12,7 +12,6 @@ class Unit {
         this.damage_to_all = false;
         this.path = [];
         this.is_busy = false;
-        this.cost = 10;
 
         this.draw();
     }
@@ -170,6 +169,7 @@ class Knight extends Unit {
     constructor() {
         super();
 
+        this.src = 'images/units/knight.png';
         this.width = 37;
         this.height = 50;
         this.default_health = 50;
@@ -179,13 +179,13 @@ class Knight extends Unit {
         this.speed = this.default_speed;
         this.default_cooldown_attack = 100;
         this.cooldown_attack = this.default_cooldown_attack;
+        this.cost = 20;
+        this.max_units = 5;
         this.win_price = 5;
         this.t = 0.005;
         this.t_param = 0.0055;
         this.y_param_a = 330 + Math.floor(Math.random() * 15) + 1;
         this.y_param_b = 55;
-
-        this.src = 'images/knight.png';
     }
 }
 
@@ -193,8 +193,8 @@ class Woodcutter extends Unit{
     constructor() {
         super();
 
-        this.src = "images/woodcutter.png";
-        this.src_carry = "images/woodcutter_carry.png";
+        this.src = "images/units/woodcutter.png";
+        this.src_carry = "images/units/woodcutter_carry.png";
         this.id = this.generateUniqueId();
         this.width = 29;
         this.height = 40;
@@ -204,6 +204,8 @@ class Woodcutter extends Unit{
         this.default_speed = 2;
         this.speed = this.default_speed;
         this.default_cooldown_attack = 50;
+        this.cost = 10;
+        this.max_units = 3;
         this.cooldown_attack = this.default_cooldown_attack;
         this.speed_wearing = this.default_speed/2;
         this.speed_cutting = 100;
@@ -269,10 +271,10 @@ class Archer extends Unit {
     constructor() {
         super();
 
-        this.src = "images/archer.png";
+        this.src = "images/units/archer.png";
         this.width = 35;
         this.height = 55;
-        this.default_health = 30;
+        this.default_health = 25;
         this.health = this.default_health;
         this.damage = 5;
         this.default_speed = 1.2;
@@ -280,6 +282,8 @@ class Archer extends Unit {
         this.attack_distance = 300;
         this.default_cooldown_attack = 200;
         this.cooldown_attack = this.default_cooldown_attack;
+        this.cost = 30;
+        this.max_units = 3;
         this.win_price = 5;
         this.t = 0.01;
         this.t_param = 0.0045;
