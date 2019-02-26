@@ -1,4 +1,5 @@
 let game = {
+    arrow: false,
     settings: {
         width: 1024,
         height: 568,
@@ -7,9 +8,16 @@ let game = {
         idle_gold_cooldown: 400,
         idle_gold: 5,
         init_gold: 150,
+        x: 50,
+        y:290,
+        t: 0.005,
+        t_param: 0.08,
+        y_param_a: 360,
+        y_param_b: 65
     },
     stage: {
         units: [],
+        arrows: [],
         trees: [],
         clouds: [],
         castle: false,
@@ -18,6 +26,7 @@ let game = {
     running: true,
     // Start initializing objects, preloading assets and display start screen
     init: function() {
+        this.arrow = new Arrow();
         // Get handler for game canvas and context
         game.canvas = document.getElementById("gamecanvas");
         game.context = game.canvas.getContext("2d");
@@ -59,11 +68,22 @@ let game = {
 
         // Units
         for (const id in game.stage.units) {
-            let unit = game.stage.units[id];
+            const unit = game.stage.units[id];
             unit.draw();
             unit.action(unit.id);
             unit.specialAction(unit.id)
         }
+
+        // Arrows
+        game.stage.arrows.forEach(function(arrow, i) {
+            console.log(arrow.iter + ' : ' + arrow.y + ' : ' +  arrow.y_start);
+            if (arrow.y > arrow.y_start && arrow.iter > 25) {
+                delete game.stage.arrows[i];
+                console.log('delete ' + i);
+                console.log(arrow.y + ' : ' +  arrow.y_start);
+            }
+            arrow.draw();
+        });
 
         if (game.stage.trees.length < game.settings.trees_max) {
             game.growTree();
@@ -79,6 +99,8 @@ let game = {
             game.changeGold(1, game.settings.idle_gold);
             game.changeGold(2, game.settings.idle_gold);
         }
+
+        game.bb();
 
         game.context.fillText("Total units: " + Object.keys(game.stage.units).length, 330, 30);
     },
@@ -109,7 +131,69 @@ let game = {
             game.stage.units[unit.id] = unit;
             game.changeGold(unit.player, -unit.cost)
         }
-    }
+    },
+    generateUniqueId() {
+        return Math.floor(Date.now() / 1000) + Math.random().toString(36).substr(2, 16);
+    },
+    dealDamage(from_unit, to_unit) {
+        if (from_unit.cooldown_attack > 0) {
+            from_unit.cooldown_attack--;
+        } else {
+            to_unit.health -= from_unit.damage;
+            from_unit.cooldown_attack = from_unit.default_cooldown_attack;
+        }
+    },
+    removeBusyWith(id) {
+        for (let unit_id in game.stage.units) {
+            let unit = game.stage.units[unit_id];
+            for(let index in unit.fighting_with) {
+                let busy_unit_id = unit.fighting_with[index];
+                if (id === busy_unit_id) {
+                    let i = unit.fighting_with.indexOf(busy_unit_id);
+                    if(i !== -1) {
+                        game.stage.units[unit_id].fighting_with.splice(i, 1);
+                    }
+                }
+            }
+            // ???
+            for(let index in unit.shooting_with) {
+                let shooted_unit_id = unit.shooting_with[index];
+                if (id === shooted_unit_id) {
+                    game.stage.units[unit_id].shooting_with = [];
+                }
+            }
+        }
+    },
+    bb() {
+
+        /*
+                this.arrow.draw();
+                //console.log(this.arrow.y + ' : ' +this.arrow.y_start);
+                if (this.arrow.y > this.arrow.y_start) {
+                    console.log('delete');
+                    console.log(this.arrow.y + ' : ' +  this.arrow.y_start);
+                    game.running = false;
+                }
+                */
+        /*
+        game.settings.x = game.settings.x + 10;
+        game.settings.t -= game.settings.t_param;
+        game.settings.y = game.settings.y_param_a + (Math.sin(game.settings.t) * game.settings.y_param_b);
+        let unit = new Image();
+        unit.src = 'images/arrow.png';
+        game.context.save();
+        //game.context.rotate(Math.PI/110);
+        game.context.drawImage(unit, game.settings.x, game.settings.y, 50, 10);
+        //game.context.restore();
+
+
+        console.log(game.settings.x + ' : ' + game.settings.y);
+
+
+        game.context.drawImage(unit, 100, 200, 50, 10);
+        game.context.drawImage(unit, 500, 200, 50, 10)
+        */
+    },
 };
 
 window.addEventListener("load", function() {

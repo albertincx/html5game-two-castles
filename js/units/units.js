@@ -1,18 +1,21 @@
 class Unit {
-    constructor() {
-        this.id = this.generateUniqueId();
-        this.src = false;
-        this.x = 50;
-        this.y = 340;
-        this.player = 1;
-        this.fighting_with = [];
-        this.shooting_with = [];
-        this.default_speed = 0;
-        this.default_health = 0;
-        this.damage_to_all = false;
-        this.path = [];
-        this.is_busy = false;
+    id = game.generateUniqueId();
+    player = 1;
+    src = false;
+    x = 50;
+    y = 340;
+    health = 100;
+    width = 100;
+    height = 100;
+    damage = 0;
+    fighting_with = [];
+    shooting_with = [];
+    default_speed = 0;
+    default_health = 0;
+    damage_to_all = false;
+    is_busy = false;
 
+    constructor() {
         this.draw();
     }
 
@@ -28,12 +31,11 @@ class Unit {
                 }
             }
             game.context.drawImage(unit, this.x, this.y, this.width, this.height);
-            //game.context.fillText(this.health, this.x + 20, this.y - 5);
             this.drawScrollbar();
         }
     }
 
-    drawScrollbar () {
+    drawScrollbar() {
         let width = this.default_health,
             height = 7,
             current_width = width * this.health / this.default_health,
@@ -48,45 +50,8 @@ class Unit {
         game.context.fillStyle = '#000';
     }
 
-    dealDamage(from_unit, to_unit) {
-        if (from_unit.cooldown_attack > 0) {
-            from_unit.cooldown_attack--;
-        } else {
-            to_unit.health -= from_unit.damage;
-            from_unit.cooldown_attack = from_unit.default_cooldown_attack;
-        }
-    }
-
-    generateUniqueId() {
-        return Math.floor(Date.now() / 1000) + Math.random().toString(36).substr(2, 16);
-    }
-
-    removeBusyWith(id) {
-        for (let unit_id in game.stage.units) {
-            let unit = game.stage.units[unit_id];
-            for(let index in unit.fighting_with) {
-                let busy_unit_id = unit.fighting_with[index];
-                if (id === busy_unit_id) {
-                    let i = unit.fighting_with.indexOf(busy_unit_id);
-                    if(i !== -1) {
-                        game.stage.units[unit_id].fighting_with.splice(i, 1);
-                    }
-                }
-            }
-            // ???
-            for(let index in unit.shooting_with) {
-                let shooted_unit_id = unit.shooting_with[index];
-                if (id === shooted_unit_id) {
-                    game.stage.units[unit_id].shooting_with = [];
-                }
-            }
-        }
-    }
-
     action(i) {
-        // Collision with unit
         let self = this;
-        // Each unit on stage
         for (const unit_id in game.stage.units) {
             let unit = game.stage.units[unit_id];
             // Check for collision with other units
@@ -107,10 +72,10 @@ class Unit {
         }
 
         if (self.fighting_with.length) {
-            // Deal damage to only one
+            // Deal damage to only one enemy
             if (!self.damage_to_all) {
                 let fighting_with_id = self.fighting_with[0];
-                this.dealDamage(self, game.stage.units[fighting_with_id]);
+                game.dealDamage(self, game.stage.units[fighting_with_id]);
             }
 
             for (let index  in self.fighting_with) {
@@ -118,27 +83,26 @@ class Unit {
                 let busy_unit = game.stage.units[unit_id];
 
                 // Take damage from each enemy
-                this.dealDamage(busy_unit, self);
+                game.dealDamage(busy_unit, self);
 
                 // Deal damage to all
                 if (self.damage_to_all) {
-                    this.dealDamage(self, busy_unit);
+                    game.dealDamage(self, busy_unit);
                 }
 
                 if (self.health <= 0) {
                     busy_unit.speed = -busy_unit.default_speed;
                     busy_unit.fighting_with.shift();
                     delete game.stage.units[self.id];
-                    this.removeBusyWith(self.id);
-
+                    game.removeBusyWith(self.id);
                     game.changeGold(busy_unit.player, self.win_price);
                 }
 
-                if (busy_unit.health <= 0) { // typeof busy_unit.health !== "undefined" &&
-                    self.fighting_with.shift(); // remove
+                if (busy_unit.health <= 0) {
+                    self.fighting_with.shift();
                     self.speed = self.default_speed;
                     delete game.stage.units[busy_unit.id];
-                    this.removeBusyWith(busy_unit.id);
+                    game.removeBusyWith(busy_unit.id);
 
                     game.changeGold(self.player, busy_unit.win_price);
                 }
@@ -148,17 +112,15 @@ class Unit {
         // Collision with castles
         if (this.player === 1 && this.x - (this.width / 2) > (game.castle2.x - game.castle2.width / 2)) {
             game.castle2.health -= this.damage;
-            this.removeBusyWith(this.id);
+            game.removeBusyWith(this.id);
             delete game.stage.units[this.id];
-
             //game.addScore(1, 10);
         }
 
         if (this.player === 2 && this.x + (this.width / 2) < (game.castle.x + game.castle.width / 2)) {
             game.castle.health -= this.damage;
-            this.removeBusyWith(this.id);
+            game.removeBusyWith(this.id);
             delete game.stage.units[this.id];
-
             //game.addScore(2, 10);
         }
     }
@@ -166,68 +128,48 @@ class Unit {
 }
 
 class Knight extends Unit {
-    constructor() {
-        super();
-
-        this.src = 'images/units/knight.png';
-        this.width = 37;
-        this.height = 50;
-        this.default_health = 50;
-        this.health = this.default_health;
-        this.damage = 10;
-        this.default_speed = 1.5;
-        this.speed = this.default_speed;
-        this.default_cooldown_attack = 100;
-        this.cooldown_attack = this.default_cooldown_attack;
-        this.cost = 20;
-        this.max_units = 5;
-        this.win_price = 5;
-        this.t = 0.005;
-        this.t_param = 0.0055;
-        this.y_param_a = 330 + Math.floor(Math.random() * 15) + 1;
-        this.y_param_b = 55;
-    }
+    src = 'images/units/knight.png';
+    width = 37;
+    height = 50;
+    default_health = 50;
+    health = this.default_health;
+    damage = 10;
+    default_speed = 1.5;
+    default_cooldown_attack = 100;
+    cost = 20;
+    win_price = 5;
+    t = 0.005;
+    t_param = 0.0055;
+    y_param_a = 330 + Math.floor(Math.random() * 15) + 1;
+    y_param_b = 55;
 }
 
 class Woodcutter extends Unit{
-    constructor() {
-        super();
-
-        this.src = "images/units/woodcutter.png";
-        this.src_carry = "images/units/woodcutter_carry.png";
-        this.id = this.generateUniqueId();
-        this.width = 29;
-        this.height = 40;
-        this.default_health = 10;
-        this.health = this.default_health;
-        this.damage = 3;
-        this.default_speed = 2;
-        this.speed = this.default_speed;
-        this.default_cooldown_attack = 50;
-        this.cost = 10;
-        this.max_units = 3;
-        this.cooldown_attack = this.default_cooldown_attack;
-        this.speed_wearing = this.default_speed/2;
-        this.speed_cutting = 100;
-
-        this.path = [];
-
-        this.win_price = 1;
-        this.tree_gold = 15;
-
-        this.t = 0.01;
-        this.t_param = 0.007;
-        this.y_param_a = 350 + Math.floor(Math.random() * 15) + 1;
-        this.y_param_b = 55;
-
-        this.is_busy = false;
-    }
+    src = "images/units/woodcutter.png";
+    src_carry = "images/units/woodcutter_carry.png";
+    width = 29;
+    height = 40;
+    default_health = 10;
+    health = this.default_health;
+    damage = 3;
+    default_speed = 2;
+    default_cooldown_attack = 50;
+    cost = 10;
+    speed_wearing = this.default_speed/2;
+    speed_cutting = 100;
+    path = [];
+    win_price = 1;
+    tree_gold = 20;
+    t = 0.01;
+    t_param = 0.007;
+    y_param_a = 350 + Math.floor(Math.random() * 15) + 1;
+    y_param_b = 55;
+    is_busy = false;
 
     action(i) {
         super.action(i);
 
-        let self = this;
-
+        const self = this;
         if (!self.is_busy) {
             // Twice slower
             this.path.push({'x': this.x, 'y': this.y});
@@ -258,7 +200,7 @@ class Woodcutter extends Unit{
                     self.y = path.y;
                 } else {
                     // Returned to castle
-                    this.removeBusyWith(self.id);
+                    game.removeBusyWith(self.id);
                     delete game.stage.units[self.id];
                     game.changeGold(self.player, self.tree_gold);
                 }
@@ -268,28 +210,21 @@ class Woodcutter extends Unit{
 }
 
 class Archer extends Unit {
-    constructor() {
-        super();
-
-        this.src = "images/units/archer.png";
-        this.width = 35;
-        this.height = 55;
-        this.default_health = 25;
-        this.health = this.default_health;
-        this.damage = 5;
-        this.default_speed = 1.2;
-        this.speed = this.default_speed;
-        this.attack_distance = 300;
-        this.default_cooldown_attack = 200;
-        this.cooldown_attack = this.default_cooldown_attack;
-        this.cost = 30;
-        this.max_units = 3;
-        this.win_price = 5;
-        this.t = 0.01;
-        this.t_param = 0.0045;
-        this.y_param_a = 340 + Math.floor(Math.random() * 15) + 1;
-        this.y_param_b = 35;
-    }
+    src = "images/units/archer.png";
+    width = 35;
+    height = 55;
+    default_health = 25;
+    health = this.default_health;
+    damage = 5;
+    default_speed = 1.2;
+    attack_distance = 300;
+    default_cooldown_attack = 200;
+    cost = 30;
+    win_price = 5;
+    t = 0.01;
+    t_param = 0.0045;
+    y_param_a = 340 + Math.floor(Math.random() * 15) + 1;
+    y_param_b = 35;
 
     specialAction(i) {
         let self = this;
@@ -317,7 +252,7 @@ class Archer extends Unit {
                 const unit = game.stage.units[self.shooting_with[0]];
                 self.shoot(self, unit);
                 if (unit.health <= 0) {
-                    this.removeBusyWith(unit.id);
+                    game.removeBusyWith(unit.id);
                     delete game.stage.units[unit.id];
                     self.shooting_with = [];
                     self.speed = self.default_speed;
@@ -326,12 +261,17 @@ class Archer extends Unit {
         }
     }
     shoot(from_unit, to_unit) {
+
         let x = to_unit.x;
         let y = to_unit.y;
         if (from_unit.cooldown_attack > 0) {
             from_unit.cooldown_attack--;
            x += from_unit.cooldown_attack/to_unit.x*10;
         } else {
+
+            game.stage.arrows.push(new Arrow(from_unit.x+30, from_unit.y, from_unit.player));
+            console.log('shoot');
+
             to_unit.health -= from_unit.damage;
             from_unit.cooldown_attack = from_unit.default_cooldown_attack;
             x = to_unit.x;
@@ -341,60 +281,5 @@ class Archer extends Unit {
         //const arrow = new Image();
         //arrow.src = "images/arrow.png";
         //game.context.drawImage(arrow, x, y, 50, 20);
-    }
-}
-
-class Tree {
-    constructor() {
-        this.src = 'images/tree.png';
-        this.x = Math.floor(Math.random() * 650) + 190;
-        this.y = 430;
-        this.width = 80;
-        this.height = 100;
-        this.has_grown = false;
-        this.time_to_grow = 100;
-        this.growth_rate = 1;
-    }
-
-    draw(tree) {
-        let width = tree.width,
-            height = tree.height;
-        if (tree.time_to_grow > 0 && !tree.has_grown) {
-            width = width/100 * (100 - tree.time_to_grow);
-            height = height/100 * (100 - tree.time_to_grow);
-            tree.time_to_grow -= tree.growth_rate;
-            tree.y -= 1;
-
-        } else {
-            tree.has_grown = true;
-        }
-
-        let trees = new Image();
-        trees.src = tree.src;
-        game.context.drawImage(trees, tree.x, tree.y, width, height);
-    }
-}
-
-class Cloud {
-    constructor(x, y, width, height, speed, src) {
-        this.x = x;
-        this.y = y;
-        this.speed = speed;
-        this.src = src;
-        this.width = width;
-        this.height = height;
-
-        this.draw();
-    }
-
-    draw() {
-        const cloud = new Image();
-        cloud.src = this.src;
-        this.x += this.speed;
-        game.context.drawImage(cloud, this.x, this.y, this.width, this.height);
-
-        if (this.x > game.canvas.width) {
-            this.x = -this.width;
-        }
     }
 }
