@@ -1,14 +1,17 @@
-class Castles {
-    constructor() {
-        this.x = 1;
-        this.y = 210;
-        this.width = 130;
-        this.height = 193;
-        this.default_health = 100;
-        this.health = this.default_health;
-        this.gold = 0;
-        this.src = "images/castle.png";
+class Castle {
+    x = 1;
+    y = 210;
+    width = 130;
+    height = 193;
+    default_health = 100;
+    health = this.default_health;
+    gold = 0;
+    src = "images/castle.png";
+    coin_src = "images/coin.png";
+    coin_width = 29;
+    coin_height = 35;
 
+    constructor() {
         this.draw();
     }
 
@@ -17,9 +20,14 @@ class Castles {
         castle.src = this.src;
         game.context.drawImage(castle, this.x, this.y, this.width, this.height);
 
+        // Coins
         game.context.font = "20pt Arial";
-        //game.context.fillText("health: " + this.health, this.x, this.y - 50);
-        game.context.fillText("gold: " + this.gold, this.x + 10, 30);
+        game.context.fillText(this.gold, this.x + 55, 32);
+
+        let coin = new Image();
+        coin.src = this.coin_src;
+        game.context.drawImage(coin, this.x + 15, 5, this.coin_width, this.coin_height);
+
         this.drawScrollbar();
     }
 
@@ -38,17 +46,8 @@ class Castles {
     }
 }
 
-class Castle extends Castles {
-    constructor() {
-        super();
-    }
-}
-
-class Castle2 extends Castles {
-    constructor() {
-        super();
-        this.x = 890;
-        this.height = 192;
-        this.src = "images/castle2.png";
-    }
+class Castle2 extends Castle {
+    x = 890;
+    height = 192;
+    src = "images/castle2.png";
 }

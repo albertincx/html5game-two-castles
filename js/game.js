@@ -1,13 +1,11 @@
 let game = {
     arrow: false,
     settings: {
-        width: 1024,
-        height: 568,
         trees_max: 3,
+        init_gold: 200,
+        idle_gold: 5,
         idle_gold_cooldown_default: 250,
         idle_gold_cooldown: 250,
-        idle_gold: 5,
-        init_gold: 200,
     },
     stage: {
         units: [],
@@ -56,7 +54,6 @@ let game = {
 
         // Trees
         game.stage.trees.forEach(function(tree, i) {
-            // Добавить логику по y в зависимости от x, что дерево не висело в воздухе и не опускалось вниз. И разные деревья
             tree.draw(tree);
         });
 
@@ -172,23 +169,23 @@ let game = {
     },
 };
 
-window.addEventListener("load", function() {
+window.addEventListener("load", () => {
     game.init();
-    document.getElementById('button_01').onclick = function() {
+    document.getElementById('button_01').onclick = () => {
         let woodcutter = new Woodcutter();
         woodcutter.path = [];
         game.hireUnit(woodcutter);
     };
 
-    document.getElementById('button_02').onclick = function() {
+    document.getElementById('button_02').onclick = () => {
         game.hireUnit(new Knight());
     };
 
-    document.getElementById('button_03').onclick = function() {
+    document.getElementById('button_03').onclick = () => {
         game.hireUnit(new Archer());
     };
 
-    document.getElementById('button_04').onclick = function() {
+    document.getElementById('button_04').onclick = () => {
         let woodcutter = new Woodcutter();
         woodcutter.player = 2;
         woodcutter.src = woodcutter.src2;
@@ -197,7 +194,7 @@ window.addEventListener("load", function() {
         game.hireUnit(woodcutter);
     };
 
-    document.getElementById('button_05').onclick = function() {
+    document.getElementById('button_05').onclick = () => {
         let knight = new Knight();
         knight.player = 2;
         knight.src = knight.src2;
@@ -206,7 +203,7 @@ window.addEventListener("load", function() {
         game.hireUnit(knight);
     };
 
-    document.getElementById('button_06').onclick = function() {
+    document.getElementById('button_06').onclick = () => {
         let archer = new Archer();
         archer.player = 2;
         archer.src = archer.src2;
@@ -216,7 +213,7 @@ window.addEventListener("load", function() {
         game.hireUnit(archer);
     };
 
-    document.addEventListener("keydown", function(event) {
+    document.addEventListener("keydown", (event) => {
         if(event.which === 81) {
             document.getElementById('button_01').click();
         }
