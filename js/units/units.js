@@ -178,7 +178,7 @@ class Woodcutter extends Unit{
             this.path.push({'x': this.x, 'y': this.y});
 
             if (game.stage.trees.length) {
-                game.stage.trees.forEach(function (tree, index) {
+                game.stage.trees.forEach( (tree, index) => {
                     if (tree.has_grown &&
                         self.x + self.width / 2 > tree.x - tree.width / 2  &&
                         self.x + self.width / 2 < tree.x + tree.width / 2

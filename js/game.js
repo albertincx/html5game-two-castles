@@ -17,7 +17,7 @@ let game = {
     },
     running: true,
     // Start initializing objects, preloading assets and display start screen
-    init: function() {
+    init: () => {
         this.arrow = new Arrow();
         // Get handler for game canvas and context
         game.canvas = document.getElementById("gamecanvas");
@@ -37,14 +37,14 @@ let game = {
 
         game.drawingLoop();
     },
-    clearObject: function () {
+    clearObject: () => {
         game.context.clearRect(0, 0, game.canvas.width, game.canvas.height);
     },
-    drawingLoop: function() {
+    drawingLoop: () => {
         game.clearObject();
 
         // Clouds
-        game.stage.clouds.forEach(function(cloud, i) {
+        game.stage.clouds.forEach((cloud, i) => {
             cloud.draw(cloud);
         });
 
@@ -53,7 +53,7 @@ let game = {
         game.castle2.draw();
 
         // Trees
-        game.stage.trees.forEach(function(tree, i) {
+        game.stage.trees.forEach((tree, i) => {
             tree.draw(tree);
         });
 
@@ -66,7 +66,7 @@ let game = {
         }
 
         // Arrows
-        game.stage.arrows.forEach(function(arrow, i) {
+        game.stage.arrows.forEach((arrow, i) => {
             let unit = game.stage.units[arrow.unit_id];
             if (typeof unit == "undefined") {
                 console.log('EXIT');
@@ -91,7 +91,7 @@ let game = {
         });
 
         if (game.stage.trees.length < game.settings.trees_max) {
-            game.growTree();
+            game.stage.trees.push(new Tree());
         }
 
         if (game.running) {
@@ -106,10 +106,6 @@ let game = {
         }
 
         game.context.fillText("Total units: " + Object.keys(game.stage.units).length, 330, 30);
-    },
-    growTree: function () {
-        let tree = new Tree();
-        this.stage.trees.push(tree);
     },
     changeGold(player, gold) {
         if (player === 1) {

@@ -22,11 +22,11 @@ class Castle {
 
         // Coins
         game.context.font = "20pt Arial";
-        game.context.fillText(this.gold, this.x + 55, 32);
+        game.context.fillText(this.gold, this.x + 50, 37);
 
         let coin = new Image();
         coin.src = this.coin_src;
-        game.context.drawImage(coin, this.x + 15, 5, this.coin_width, this.coin_height);
+        game.context.drawImage(coin, this.x + 15, 10, this.coin_width, this.coin_height);
 
         this.drawScrollbar();
     }
