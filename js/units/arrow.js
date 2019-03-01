@@ -1,46 +1,73 @@
 class Arrow {
-    id = game.generateUniqueId();
-    t = 0.005;
-    t_param = 0.12;
-    y_param_a = 390;
-    y_param_b = 65;
+    p0 = {"x": 100, "y": 340}; // start
+    p1 = {"x": 180, "y": 50}; // middle 1
+    p2 = {"x": 180, "y": 50}; // middle 2
+    p3 = {"x": 300, "y": 340}; // end
+    t = 1;
+    speed = -0.02;
+    player = 1;
     src = 'images/arrow.png';
-    y_start = false;
-    iter = 0;
+    src2 = 'images/arrow2.png';
 
-    constructor(x = 50, y = 290, player = 1) {
-        this.x = x;
-        this.y = y;
-        this.x_start = x;
+    constructor(x_start, y_start, x_end, y_end, player = 1, damage, unit_id) {
+
         this.player = player;
+        this.damage = damage;
+        this.unit_id = unit_id;
 
-        //this.prev_y = y;
-        //this.draw();
+        this.p0.x = x_start;
+        this.p0.y = y_start;
+        this.p3.x = x_end;
+        this.p3.y = y_end;
+
+        //this.p1.x = this.p2.x = x_start + 50;
+        this.p1.x = this.p2.x = x_start + (x_end - x_start)/2;
+
+        if (this.player === 2) {
+            this.p1.x = this.p2.x = x_start + (x_end - x_start)/2;
+        }
+
+        this.p1.y = this.p2.y = y_start - 40;//y_end/2;
     }
 
     draw() {
+        let at = 1 - this.t;
+        let green1x = this.p0.x * this.t + this.p1.x * at;
+        let green1y = this.p0.y * this.t + this.p1.y * at;
+        let green2x = this.p1.x * this.t + this.p2.x * at;
+        let green2y = this.p1.y * this.t + this.p2.y * at;
+        let green3x = this.p2.x * this.t + this.p3.x * at;
+        let green3y = this.p2.y * this.t + this.p3.y * at;
+        let blue1x = green1x * this.t + green2x * at;
+        let blue1y = green1y * this.t + green2y * at;
+        let blue2x = green2x * this.t + green3x * at;
+        let blue2y = green2y * this.t + green3y * at;
+        let finalx = blue1x * this.t + blue2x * at;
+        let finaly = blue1y * this.t + blue2y * at;
 
-        this.t -= this.t_param;
-        this.y = this.y_param_a + (Math.sin(this.t) * this.y_param_b);
-        if (this.player === 1) {
-            this.x = this.x + 10;
-        } else {
-            this.x = this.x - 10;
-        }
+        //game.context.clearRect(0, 0, game.context.width, game.context.height);
+        //game.context.beginPath();
+        //game.context.arc(finalx, finaly, 30, 0, 2 * Math.PI, false);
+        //game.context.fillStyle = 'red';
+        //game.context.fill();
+        //game.context.closePath();
 
-
-        if (!this.y_start) {
-            this.y_start = this.y;
-        } else {
-            this.iter++;
-        }
-
-        let unit = new Image();
-        unit.src = this.src;
         game.context.save();
-        //game.context.rotate(Math.PI/110);
-        game.context.drawImage(unit, this.x, this.y, 30, 5);
-        //game.context.restore();
+
+
+        const arrow = new Image();
+        arrow.src = this.src;
+        if (this.player === 2) {
+            arrow.src = this.src2;
+            //let angleInDegrees = 10;
+            //game.context.rotate(angleInDegrees*Math.PI / 180);
+        }
+
+        game.context.drawImage(arrow, finalx, finaly, 30, 5);
+        game.context.restore();
+        this.t += this.speed;
+        //console.log(this.t);
+        //if (this.t > 1 || this.t < 0) this.speed *= -1;
 
     }
 }

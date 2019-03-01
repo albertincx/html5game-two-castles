@@ -21,7 +21,7 @@ class Unit {
 
     draw() {
         if (this.src) {
-            let unit = new Image();
+            const unit = new Image();
             unit.src = this.src;
             if (!this.fighting_with.length && !this.shooting_with.length && !this.is_busy) {
                 if (!this.fighting_with.length) { //this.x < 900 &&
@@ -36,7 +36,7 @@ class Unit {
     }
 
     drawScrollbar() {
-        let width = this.default_health,
+        const width = this.default_health,
             height = 7,
             current_width = width * this.health / this.default_health,
             pos_offset = (this.default_health - this.width) / 2;
@@ -51,9 +51,9 @@ class Unit {
     }
 
     action(i) {
-        let self = this;
+        const self = this;
         for (const unit_id in game.stage.units) {
-            let unit = game.stage.units[unit_id];
+            const unit = game.stage.units[unit_id];
             // Check for collision with other units
             if (
                 self.x+self.width/2 > unit.x &&
@@ -74,13 +74,13 @@ class Unit {
         if (self.fighting_with.length) {
             // Deal damage to only one enemy
             if (!self.damage_to_all) {
-                let fighting_with_id = self.fighting_with[0];
+                const fighting_with_id = self.fighting_with[0];
                 game.dealDamage(self, game.stage.units[fighting_with_id]);
             }
 
             for (let index  in self.fighting_with) {
-                let unit_id = self.fighting_with[index];
-                let busy_unit = game.stage.units[unit_id];
+                const unit_id = self.fighting_with[index];
+                const busy_unit = game.stage.units[unit_id];
 
                 // Take damage from each enemy
                 game.dealDamage(busy_unit, self);
@@ -129,6 +129,7 @@ class Unit {
 
 class Knight extends Unit {
     src = 'images/units/knight.png';
+    src2 = 'images/units/knight2.png';
     width = 37;
     height = 50;
     default_health = 50;
@@ -146,6 +147,7 @@ class Knight extends Unit {
 
 class Woodcutter extends Unit{
     src = "images/units/woodcutter.png";
+    src2 = 'images/units/woodcutter2.png';
     src_carry = "images/units/woodcutter_carry.png";
     width = 29;
     height = 40;
@@ -211,6 +213,7 @@ class Woodcutter extends Unit{
 
 class Archer extends Unit {
     src = "images/units/archer.png";
+    src2 = "images/units/archer2.png";
     width = 35;
     height = 55;
     default_health = 25;
@@ -218,28 +221,28 @@ class Archer extends Unit {
     damage = 5;
     default_speed = 1.2;
     attack_distance = 300;
-    default_cooldown_attack = 200;
+    default_cooldown_attack = 500;
     cost = 30;
     win_price = 5;
     t = 0.01;
     t_param = 0.0045;
     y_param_a = 340 + Math.floor(Math.random() * 15) + 1;
     y_param_b = 35;
+    is_shoot = false;
 
     specialAction(i) {
-        let self = this;
+        const self = this;
 
         for (const unit_id in game.stage.units) {
-            let unit = game.stage.units[unit_id];
+            const unit = game.stage.units[unit_id];
             // Check for collision with other units
-            let is_far = self.x+self.attack_distance > unit.x;
+            let is_far = self.x + self.attack_distance > unit.x;
             if (self.player === 2) {
-                is_far = self.x+self.attack_distance < unit.x;
+                is_far = self.x + self.attack_distance < unit.x;
             }
             if (
                 is_far &&
                 self.player !== unit.player &&
-                //self.player === 1 &&
                  !self.shooting_with.length
             ) {
                 self.shooting_with.push(unit.id);
@@ -250,36 +253,20 @@ class Archer extends Unit {
 
             if (self.shooting_with.length) {
                 const unit = game.stage.units[self.shooting_with[0]];
-                self.shoot(self, unit);
-                if (unit.health <= 0) {
-                    game.removeBusyWith(unit.id);
-                    delete game.stage.units[unit.id];
-                    self.shooting_with = [];
-                    self.speed = self.default_speed;
-                }
+                self.shoot(unit);
             }
         }
     }
-    shoot(from_unit, to_unit) {
-
-        let x = to_unit.x;
-        let y = to_unit.y;
-        if (from_unit.cooldown_attack > 0) {
-            from_unit.cooldown_attack--;
-           x += from_unit.cooldown_attack/to_unit.x*10;
+    shoot(to_unit) {
+        if (this.cooldown_attack > 0) {
+            if (!this.is_shoot) {
+                game.stage.arrows.push(new Arrow(this.x, this.y, to_unit.x, to_unit.y, this.player, this.damage, to_unit.id));
+                this.is_shoot = true;
+            }
+            this.cooldown_attack--;
         } else {
-
-            game.stage.arrows.push(new Arrow(from_unit.x+30, from_unit.y, from_unit.player));
-            console.log('shoot');
-
-            to_unit.health -= from_unit.damage;
-            from_unit.cooldown_attack = from_unit.default_cooldown_attack;
-            x = to_unit.x;
-            y = to_unit.y;
+            this.cooldown_attack = this.default_cooldown_attack;
+            this.is_shoot = false;
         }
-
-        //const arrow = new Image();
-        //arrow.src = "images/arrow.png";
-        //game.context.drawImage(arrow, x, y, 50, 20);
     }
 }
