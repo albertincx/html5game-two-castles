@@ -2,7 +2,7 @@ let game = {
     arrow: false,
     settings: {
         trees_max: 3,
-        init_gold: 250,
+        init_gold: 400,
         idle_gold: 5,
         idle_gold_cooldown_default: 250,
         idle_gold_cooldown: 250,
@@ -61,8 +61,8 @@ let game = {
         for (const id in game.stage.units) {
             const unit = game.stage.units[id];
             unit.draw();
-            unit.action(unit.id);
-            unit.specialAction(unit.id)
+            unit.action();
+            unit.specialAction()
         }
 
         // Arrows

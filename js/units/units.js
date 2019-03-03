@@ -50,7 +50,7 @@ class Unit {
         game.context.fillStyle = '#000';
     }
 
-    action(i) {
+    action() {
         const self = this;
         for (const unit_id in game.stage.units) {
             const unit = game.stage.units[unit_id];
@@ -124,7 +124,7 @@ class Unit {
             //game.addScore(2, 10);
         }
     }
-    specialAction(i) {}
+    specialAction() {}
 }
 
 class Knight extends Unit {
@@ -168,9 +168,7 @@ class Woodcutter extends Unit{
     y_param_b = 55;
     is_busy = false;
 
-    action(i) {
-        super.action(i);
-
+    action() {
         const self = this;
         if (!self.is_busy) {
             // Twice slower
@@ -230,7 +228,7 @@ class Archer extends Unit {
     y_param_b = 35;
     is_shoot = false;
 
-    specialAction(i) {
+    specialAction() {
         const self = this;
 
         for (const unit_id in game.stage.units) {
