@@ -2,7 +2,7 @@ let game = {
     arrow: false,
     settings: {
         trees_max: 3,
-        init_gold: 200,
+        init_gold: 250,
         idle_gold: 5,
         idle_gold_cooldown_default: 250,
         idle_gold_cooldown: 250,
@@ -17,15 +17,15 @@ let game = {
     },
     running: true,
     // Start initializing objects, preloading assets and display start screen
-    init: () => {
+    init() {
         this.arrow = new Arrow();
         // Get handler for game canvas and context
         game.canvas = document.getElementById("gamecanvas");
         game.context = game.canvas.getContext("2d");
 
-        game.stage.clouds.push(new Cloud(600, 50, 255, 76, 0.05, 'images/cloud_03.png'));
-        game.stage.clouds.push(new Cloud(0, 100, 178, 75, 0.1, 'images/cloud_01.png'));
-        game.stage.clouds.push(new Cloud(400, 200, 173, 52, 0.2, 'images/cloud_02.png'));
+        game.stage.clouds.push(new Clouds(600, 50, 255, 76, 0.05, 'images/cloud_03.png'));
+        game.stage.clouds.push(new Clouds(0, 100, 178, 75, 0.1, 'images/cloud_01.png'));
+        game.stage.clouds.push(new Clouds(400, 200, 173, 52, 0.2, 'images/cloud_02.png'));
 
         // Castles
         game.castle = new Castle();
@@ -37,10 +37,10 @@ let game = {
 
         game.drawingLoop();
     },
-    clearObject: () => {
+    clearObject() {
         game.context.clearRect(0, 0, game.canvas.width, game.canvas.height);
     },
-    drawingLoop: () => {
+    drawingLoop() {
         game.clearObject();
 
         // Clouds
@@ -69,7 +69,6 @@ let game = {
         game.stage.arrows.forEach((arrow, i) => {
             let unit = game.stage.units[arrow.unit_id];
             if (typeof unit == "undefined") {
-                console.log('EXIT');
                 unit = false;
             }
 
@@ -104,8 +103,20 @@ let game = {
             game.changeGold(1, game.settings.idle_gold);
             game.changeGold(2, game.settings.idle_gold);
         }
+        //game.context.fillText("Total units: " + Object.keys(game.stage.units).length, 430, 40);
+    },
+    gameOver(win_player) {
+        game.stage.units = [];
+        game.hideButtons();
+        game.settings.idle_gold = 0;
+        game.context.font = "40pt Arial";
+        win_player = win_player === 1 ? 'two' : 'one';
+        const text = "Player " + win_player + ' wins the game!';
+        game.context.fillText(text, 210, 240);
 
-        game.context.fillText("Total units: " + Object.keys(game.stage.units).length, 330, 30);
+    },
+    hideButtons() {
+        document.querySelector('#gamecontainer .buttons').style.visibility = 'hidden';
     },
     changeGold(player, gold) {
         if (player === 1) {

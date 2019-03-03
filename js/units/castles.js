@@ -10,12 +10,16 @@ class Castle {
     coin_src = "images/coin.png";
     coin_width = 29;
     coin_height = 35;
+    player = 1;
 
     constructor() {
         this.draw();
     }
 
     draw() {
+        if (this.health <= 0) {
+            game.gameOver(this.player);
+        }
         let castle = new Image();
         castle.src = this.src;
         game.context.drawImage(castle, this.x, this.y, this.width, this.height);
@@ -32,6 +36,10 @@ class Castle {
     }
 
     drawScrollbar () {
+        if (this.health < 0) {
+            this.health = 0;
+        }
+
         let width = 110,
             height = 15,
             current_width = width * this.health / this.default_health;
@@ -50,4 +58,5 @@ class Castle2 extends Castle {
     x = 890;
     height = 192;
     src = "images/castle2.png";
+    player = 2;
 }

@@ -1,4 +1,4 @@
-class Cloud {
+class Clouds {
     constructor(x, y, width, height, speed, src) {
         this.x = x;
         this.y = y;
