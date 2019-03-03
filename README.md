@@ -1,6 +1,6 @@
 # Two castles
 
-A browser game browser game written in modern javascript using canvas.
+A browser game written in modern javascript using canvas.
 Currently in development.
 
 ## Rules
