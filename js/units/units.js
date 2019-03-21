@@ -161,7 +161,7 @@ class Woodcutter extends Unit{
     speed_cutting = 100;
     path = [];
     win_price = 1;
-    tree_gold = 20;
+    tree_gold = 30;
     t = 0.01;
     t_param = 0.007;
     y_param_a = 350 + Math.floor(Math.random() * 15) + 1;
