@@ -103,7 +103,6 @@ let game = {
             game.changeGold(1, game.settings.idle_gold);
             game.changeGold(2, game.settings.idle_gold);
         }
-        //game.context.fillText("Total units: " + Object.keys(game.stage.units).length, 430, 40);
     },
     gameOver(win_player) {
         game.stage.units = [];
@@ -178,6 +177,12 @@ let game = {
 
 window.addEventListener("load", () => {
     game.init();
+
+    document.getElementById('menu').onclick = () => {
+        document.getElementById("menu").style.display = "none";
+        document.querySelector(".buttons").style.display = "block";
+    };
+
     document.getElementById('button_01').onclick = () => {
         let woodcutter = new Woodcutter();
         woodcutter.path = [];
@@ -221,23 +226,24 @@ window.addEventListener("load", () => {
     };
 
     document.addEventListener("keydown", (event) => {
-        if(event.which === 81) {
+        if (event.which === 81) {
             document.getElementById('button_01').click();
         }
-        if(event.which === 87) {
+        if (event.which === 87) {
             document.getElementById('button_02').click();
         }
-        if(event.which === 69) {
+        if (event.which === 69) {
             document.getElementById('button_03').click();
         }
-        if(event.which === 65) {
+        if (event.which === 65) {
             document.getElementById('button_04').click();
         }
-        if(event.which === 83) {
+        if (event.which === 83) {
             document.getElementById('button_05').click();
         }
-        if(event.which === 68) {
+        if (event.which === 68) {
             document.getElementById('button_06').click();
         }
     });
+
 });

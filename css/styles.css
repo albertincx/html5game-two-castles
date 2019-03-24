@@ -21,22 +21,94 @@ a {
     height: 568px;
     background-color: #FFF;
     background: url("../images/backgrounds/background.png");
-
     padding-left: 0;
     padding-right: 0;
     margin-left: auto;
     margin-right: auto;
-
-
 }
 
-.buttons img {
+.buttons {
+    display: none;
+}
+
+.buttons .button {
     width: 80px;
     height: 80px;
     top: 470px;
     position: relative;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.buttons .button .cost {
+    position: absolute;
+    right: 20px;
+    bottom: 15px;
+    font-size: 30px;
+    color: #f5f5f5;
+}
+
+.buttons .button .title {
+    position: absolute;
+    left: 15px;
+    bottom: 50px;
+    font-size: 35px;
+    font-weight: bold;
+    color: #f5f5f5;
 }
 
 canvas {
     position: absolute;
+}
+
+.menu {
+    position: absolute;
+    margin-top: 40px;
+    margin-left: 260px;
+}
+
+.menu .menu_btn {
+    position: absolute;
+    cursor: pointer;
+}
+
+.menu .one_player_btn {
+    margin-left: 102px;
+    margin-top: -4px;
+}
+
+.menu .two_player_btn {
+    margin-left: 260px;
+    margin-top: -4px;
+}
+
+.menu .credits_btn {
+    margin-left: 108px;
+    margin-top: 105px;
+}
+
+.menu .menu_text {
+    z-index: 999999;
+    position: fixed;
+    cursor: pointer;
+    font-size: 35px;
+    font-weight: bold;
+    color: #f5f5f5;
+}
+
+.menu .one_player_btn .menu_text,
+.menu .two_player_btn .menu_text {
+    margin-top: 35px;
+    margin-left: 50px;
+}
+
+.menu .credits_btn .menu_text {
+    margin-top: 35px;
+    margin-left: 65px;
+}
+
+.menu .title_btn .menu_text {
+    margin-top: 110px;
+    margin-left: 92px;
+    font-size: 44px;
 }
