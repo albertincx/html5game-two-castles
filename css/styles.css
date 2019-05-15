@@ -72,6 +72,10 @@ canvas {
     cursor: pointer;
 }
 
+.menu .button span {
+    position: absolute;
+}
+
 .menu .one_player_btn {
     margin-left: 102px;
     margin-top: -4px;

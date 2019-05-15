@@ -4,87 +4,87 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title></title>
     <script src="js/game.js" type="text/javascript"></script>
-    <script src="js/units/units.js" type="text/javascript"></script>
-    <script src="js/units/castles.js" type="text/javascript"></script>
-    <script src="js/units/clouds.js" type="text/javascript"></script>
-    <script src="js/units/tree.js" type="text/javascript"></script>
-    <script src="js/units/arrow.js" type="text/javascript"></script>
+    <script src="js/units/Units.js" type="text/javascript"></script>
+    <script src="js/units/Castles.js" type="text/javascript"></script>
+    <script src="js/units/Clouds.js" type="text/javascript"></script>
+    <script src="js/units/Tree.js" type="text/javascript"></script>
+    <script src="js/units/Arrow.js" type="text/javascript"></script>
     <link rel="stylesheet" href="css/styles.css" type="text/css" media="screen">
 </head>
-<h1 style="color: #FFF">Two castles - html5 game</h1>
-<div id="wrapper">
-    <div id="gamecontainer">
-        <canvas id="gamecanvas" width="1024" height="568" class="gamelayer"></canvas>
-        <div class="menu" id="menu">
-            <div class="title_btn">
-                <span class="menu_text">TWO CASTLES</span>
-                <img src="images/menu_01.png">
+<body>
+    <h1 style="color: #FFF">Two castles - html5 game</h1>
+    <div id="wrapper">
+        <div id="gamecontainer">
+            <canvas id="gamecanvas" width="1024" height="568" class="gamelayer"></canvas>
+            <div class="menu" id="menu">
+                <div class="title_btn button">
+                    <span class="menu_text">TWO CASTLES</span>
+                    <img src="images/menu_01.png">
+                </div>
+                <div class="one_player_btn button">
+                    <span class="menu_text">1P</span>
+                    <img src="images/menu_02.png" class="menu_btn">
+                </div>
+                <div class="two_player_btn button">
+                    <span class="menu_text">2P</span>
+                    <img src="images/menu_03.png" class="menu_btn">
+                </div>
+                <div class="credits_btn button">
+                    <span class="menu_text">CREDITS</span>
+                    <img src="images/menu_04.png" class="menu_btn">
+                </div>
             </div>
-            <div class="one_player_btn">
-                <span class="menu_text">1P</span>
-                <img src="images/menu_02.png" class="menu_btn">
-            </div>
-            <div class="two_player_btn">
-                <span class="menu_text">2P</span>
-                <img src="images/menu_03.png" class="menu_btn">
-            </div>
-            <div class="credits_btn">
-                <span class="menu_text">CREDITS</span>
-                <img src="images/menu_04.png" class="menu_btn">
-            </div>
-        </div>
-        <div class="buttons">
-            <span class="button" id="button_01" style="left: 30px">
-                <span class="title" style="">Q</span>
-                <span class="cost" style="">10</span>
-                <span class="img"><img src="images/buttons/baxe.png"></span>
-            </span>
-            <span class="button" id="button_02" style="left: 30px">
-                <span class="title" style="">W</span>
-                <span class="cost" style="">20</span>
-                <span class="img"><img src="images/buttons/bsword.png"></span>
-            </span>
-            <span class="button" id="button_03" style="left: 30px">
-                <span class="title" style="">E</span>
-                <span class="cost" style="">30</span>
-                <span class="img"><img src="images/buttons/barrow.png"></span>
-            </span>
+            <div class="buttons">
+                <span class="button" id="button_01" style="left: 30px">
+                    <span class="title" style="">Q</span>
+                    <span class="cost" style="">10</span>
+                    <span class="img"><img src="images/buttons/baxe.png"></span>
+                </span>
+                <span class="button" id="button_02" style="left: 30px">
+                    <span class="title" style="">W</span>
+                    <span class="cost" style="">20</span>
+                    <span class="img"><img src="images/buttons/bsword.png"></span>
+                </span>
+                <span class="button" id="button_03" style="left: 30px">
+                    <span class="title" style="">E</span>
+                    <span class="cost" style="">30</span>
+                    <span class="img"><img src="images/buttons/barrow.png"></span>
+                </span>
 
-            <span class="button" id="button_04" style="left: 390px">
-                <span class="title" style="">A</span>
-                <span class="cost" style="">10</span>
-                <span class="img"><img src="images/buttons/baxe.png"></span>
-            </span>
-            <span class="button" id="button_05" style="left: 390px">
-                <span class="title" style="">S</span>
-                <span class="cost" style="">20</span>
-                <span class="img"><img src="images/buttons/bsword.png"></span>
-            </span>
-            <span class="button" id="button_06" style="left: 390px">
-                <span class="title" style="">D</span>
-                <span class="cost" style="">30</span>
-                <span class="img"><img src="images/buttons/barrow.png"></span>
-            </span>
+                <span class="button" id="button_04" style="left: 390px">
+                    <span class="title" style="">A</span>
+                    <span class="cost" style="">10</span>
+                    <span class="img"><img src="images/buttons/baxe.png"></span>
+                </span>
+                <span class="button" id="button_05" style="left: 390px">
+                    <span class="title" style="">S</span>
+                    <span class="cost" style="">20</span>
+                    <span class="img"><img src="images/buttons/bsword.png"></span>
+                </span>
+                <span class="button" id="button_06" style="left: 390px">
+                    <span class="title" style="">D</span>
+                    <span class="cost" style="">30</span>
+                    <span class="img"><img src="images/buttons/barrow.png"></span>
+                </span>
+            </div>
         </div>
     </div>
-</div>
-<h3>Last updated 24.03.19</h3>
-<h3>Visit <a href="https://github.com/demyanovs/html5game-two-castles" target="_blank">https://github.com/demyanovs/html5game-two-castles</a> for details.</h3>
+    <h3>Last updated 24.03.19</h3>
+    <h3>Visit <a href="https://github.com/demyanovs/html5game-two-castles" target="_blank">https://github.com/demyanovs/html5game-two-castles</a> for details.</h3>
 
     <!-- Yandex.Metrika counter -->
-<script type="text/javascript" >
-   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+    <script type="text/javascript" >
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-   ym(53267011, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true
-   });
-</script>
-<noscript><div><img src="https://mc.yandex.ru/watch/53267011" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->
-    
-    </body>
+        ym(53267011, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true
+        });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/53267011" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+</body>
 </html>

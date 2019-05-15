@@ -27,6 +27,11 @@ let game = {
         game.stage.clouds.push(new Clouds(0, 100, 178, 75, 0.1, 'images/cloud_01.png'));
         game.stage.clouds.push(new Clouds(400, 200, 173, 52, 0.2, 'images/cloud_02.png'));
 
+
+    },
+
+    startGame(mode = '') {
+        console.log(mode);
         // Castles
         game.castle = new Castle();
         game.castle2 = new Castle2();
@@ -37,6 +42,7 @@ let game = {
 
         game.drawingLoop();
     },
+
     clearObject() {
         game.context.clearRect(0, 0, game.canvas.width, game.canvas.height);
     },
@@ -178,7 +184,14 @@ let game = {
 window.addEventListener("load", () => {
     game.init();
 
-    document.getElementById('menu').onclick = () => {
+    document.querySelector('.one_player_btn').onclick = () => {
+        game.startGame('onePlayer');
+        document.getElementById("menu").style.display = "none";
+        document.querySelector(".buttons").style.display = "block";
+    };
+
+    document.querySelector('.two_player_btn').onclick = () => {
+        game.startGame('twoPlayers');
         document.getElementById("menu").style.display = "none";
         document.querySelector(".buttons").style.display = "block";
     };
