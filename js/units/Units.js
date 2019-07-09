@@ -146,11 +146,11 @@ class Knight extends Unit {
 }
 
 class Woodcutter extends Unit{
-    src = "images/units/woodcutter.png";
+    src = "images/units/lumb.png";
     src2 = 'images/units/woodcutter2.png';
     src_carry = "images/units/woodcutter_carry.png";
-    width = 29;
-    height = 40;
+    width = 33;
+    height = 45;
     default_health = 10;
     health = this.default_health;
     damage = 3;
@@ -205,6 +205,22 @@ class Woodcutter extends Unit{
                     game.changeGold(self.player, self.tree_gold);
                 }
             }
+        }
+
+        // TODO duplicate
+        // Collision with castles
+        if (this.player === 1 && this.x - (this.width / 2) > (game.castle2.x - game.castle2.width / 2)) {
+            game.castle2.health -= this.damage;
+            game.removeBusyWith(this.id);
+            delete game.stage.units[this.id];
+            //game.addScore(1, 10);
+        }
+
+        if (this.player === 2 && this.x + (this.width / 2) < (game.castle.x + game.castle.width / 2)) {
+            game.castle.health -= this.damage;
+            game.removeBusyWith(this.id);
+            delete game.stage.units[this.id];
+            //game.addScore(2, 10);
         }
     }
 }

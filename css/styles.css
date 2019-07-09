@@ -91,7 +91,7 @@ canvas {
     margin-top: 105px;
 }
 
-.menu .menu_text {
+.menu_text {
     z-index: 999999;
     position: fixed;
     cursor: pointer;
@@ -115,4 +115,26 @@ canvas {
     margin-top: 110px;
     margin-left: 92px;
     font-size: 44px;
+    cursor: default;
+}
+
+.player-buttons {
+    display: initial;
+}
+
+.restart-button {
+    margin-left: 365px;
+    display: none;
+}
+
+.restart-button .menu_text {
+    position: absolute;
+    top: 270px;
+    margin-left: 65px;
+    margin-top: 40px;
+}
+
+.restart-button img {
+    position: absolute;
+    top: 270px;
 }

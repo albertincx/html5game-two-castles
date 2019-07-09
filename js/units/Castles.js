@@ -17,7 +17,7 @@ class Castle {
     }
 
     draw() {
-        if (this.health <= 0) {
+        if (this.health <= 0 && !game.isGameOver) {
             game.gameOver(this.player);
         }
         let castle = new Image();

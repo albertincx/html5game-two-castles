@@ -1,6 +1,9 @@
-let game = {
+const game = {
+    ai: false,
     arrow: false,
     settings: {
+        worldWidth: 1024,
+        worldHeight: 568,
         trees_max: 3,
         init_gold: 400,
         idle_gold: 5,
@@ -16,25 +19,29 @@ let game = {
         castle2: false
     },
     running: true,
+    isGameOver: false,
+    requestId: false,
+
     // Start initializing objects, preloading assets and display start screen
     init() {
-        this.arrow = new Arrow();
+        //this.arrow = new Arrow();
         // Get handler for game canvas and context
         game.canvas = document.getElementById("gamecanvas");
         game.context = game.canvas.getContext("2d");
-
         game.stage.clouds.push(new Clouds(600, 50, 255, 76, 0.05, 'images/cloud_03.png'));
         game.stage.clouds.push(new Clouds(0, 100, 178, 75, 0.1, 'images/cloud_01.png'));
         game.stage.clouds.push(new Clouds(400, 200, 173, 52, 0.2, 'images/cloud_02.png'));
-
-
     },
 
     startGame(mode = '') {
-        console.log(mode);
+        game.isGameOver = false;
         // Castles
         game.castle = new Castle();
         game.castle2 = new Castle2();
+
+        if (mode === 'onePlayer') {
+            game.ai = new AI();
+        }
 
         // Init gold
         game.changeGold(1, game.settings.init_gold);
@@ -43,11 +50,11 @@ let game = {
         game.drawingLoop();
     },
 
-    clearObject() {
-        game.context.clearRect(0, 0, game.canvas.width, game.canvas.height);
-    },
     drawingLoop() {
         game.clearObject();
+        if (game.ai) {
+            game.ai.makeDecision(game.stage);
+        }
 
         // Clouds
         game.stage.clouds.forEach((cloud, i) => {
@@ -99,8 +106,8 @@ let game = {
             game.stage.trees.push(new Tree());
         }
 
-        if (game.running) {
-            requestAnimationFrame(game.drawingLoop);
+        if (game.running && !game.requestId) {
+            const requestId = requestAnimationFrame(game.drawingLoop);
         }
 
         --game.settings.idle_gold_cooldown;
@@ -110,19 +117,37 @@ let game = {
             game.changeGold(2, game.settings.idle_gold);
         }
     },
-    gameOver(win_player) {
-        game.stage.units = [];
-        game.hideButtons();
-        game.settings.idle_gold = 0;
-        game.context.font = "40pt Arial";
-        win_player = win_player === 1 ? 'two' : 'one';
-        const text = "Player " + win_player + ' wins the game!';
-        game.context.fillText(text, 210, 240);
 
+    gameOver(win_player) {
+        game.isGameOver = true;
+        game.ai = false;
+        game.stage.units = [];
+        game.settings.idle_gold = 0;
+        ///game.context.font = "40pt Arial";
+        //win_player = win_player === 1 ? 'two' : 'one';
+        //const text = "Player " + win_player + ' wins the game!';
+        //game.context.fillText(text, 210, 240);
+
+        game.showRestartButton();
+        game.hideButtons();
     },
+
+    restartGame() {
+        game.castle = false;
+        game.castle2 = false;
+        game.running = true;
+        document.querySelector('#menu').style.display = 'block';
+        document.querySelector('.restart-button').style.display = 'none';
+    },
+
     hideButtons() {
-        document.querySelector('#gamecontainer .buttons').style.visibility = 'hidden';
+        document.querySelector('#gamecontainer .buttons').style.display = 'none';
     },
+
+    showRestartButton() {
+        document.querySelector('.restart-button').style.display = 'block';
+    },
+
     changeGold(player, gold) {
         if (player === 1) {
             game.castle.gold += parseInt(gold);
@@ -138,7 +163,6 @@ let game = {
         if (remain_gold >= gold) {
             return true;
         }
-        console.log('Not enough gold');
         return false;
     },
     hireUnit(unit) {
@@ -147,9 +171,11 @@ let game = {
             game.changeGold(unit.player, -unit.cost)
         }
     },
+
     generateUniqueId() {
         return Math.floor(Date.now() / 1000) + Math.random().toString(36).substr(2, 16);
     },
+
     dealDamage(from_unit, to_unit) {
         if (from_unit.cooldown_attack > 0) {
             from_unit.cooldown_attack--;
@@ -158,6 +184,7 @@ let game = {
             from_unit.cooldown_attack = from_unit.default_cooldown_attack;
         }
     },
+
     removeBusyWith(id) {
         for (let unit_id in game.stage.units) {
             let unit = game.stage.units[unit_id];
@@ -179,6 +206,10 @@ let game = {
             }
         }
     },
+
+    clearObject() {
+        game.context.clearRect(0, 0, game.canvas.width, game.canvas.height);
+    }
 };
 
 window.addEventListener("load", () => {
@@ -186,7 +217,9 @@ window.addEventListener("load", () => {
 
     document.querySelector('.one_player_btn').onclick = () => {
         game.startGame('onePlayer');
+
         document.getElementById("menu").style.display = "none";
+        document.getElementById("player-two-buttons").style.display = "none";
         document.querySelector(".buttons").style.display = "block";
     };
 
@@ -195,6 +228,11 @@ window.addEventListener("load", () => {
         document.getElementById("menu").style.display = "none";
         document.querySelector(".buttons").style.display = "block";
     };
+
+    document.querySelector('.restart-button').onclick = () => {
+        game.restartGame();
+    };
+
 
     document.getElementById('button_01').onclick = () => {
         let woodcutter = new Woodcutter();
@@ -258,5 +296,4 @@ window.addEventListener("load", () => {
             document.getElementById('button_06').click();
         }
     });
-
 });

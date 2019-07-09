@@ -66,7 +66,6 @@ class Arrow {
         game.context.drawImage(arrow, finalx, finaly, 30, 5);
         game.context.restore();
         this.t += this.speed;
-        //console.log(this.t);
         //if (this.t > 1 || this.t < 0) this.speed *= -1;
 
     }
