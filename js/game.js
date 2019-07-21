@@ -39,6 +39,12 @@ const game = {
         game.castle = new Castle();
         game.castle2 = new Castle2();
 
+        //document.querySelector('.buttons').style.display = 'block';
+        game.stage.units = [];
+        game.stage.trees = [];
+        game.stage.arrows = [];
+        game.ai = false;
+
         if (mode === 'onePlayer') {
             game.ai = new AI();
         }
@@ -46,6 +52,9 @@ const game = {
         // Init gold
         game.changeGold(1, game.settings.init_gold);
         game.changeGold(2, game.settings.init_gold);
+
+        document.querySelector('.ingame-menu').style.display = 'block';
+        document.querySelector('.restart-button').style.display = 'block';
 
         game.drawingLoop();
     },
@@ -106,8 +115,8 @@ const game = {
             game.stage.trees.push(new Tree());
         }
 
-        if (game.running && !game.requestId) {
-            const requestId = requestAnimationFrame(game.drawingLoop);
+        if (game.running) {
+            requestAnimationFrame(game.drawingLoop);
         }
 
         --game.settings.idle_gold_cooldown;
@@ -124,9 +133,12 @@ const game = {
         game.stage.units = [];
         game.settings.idle_gold = 0;
         ///game.context.font = "40pt Arial";
-        //win_player = win_player === 1 ? 'two' : 'one';
-        //const text = "Player " + win_player + ' wins the game!';
         //game.context.fillText(text, 210, 240);
+        win_player = win_player === 1 ? 'two' : 'one';
+        document.querySelector('.game-results .result-data').textContent = "Player " + win_player + ' wins the game!';
+        document.querySelector('.ingame-menu').style.display = 'none';
+
+
 
         game.showRestartButton();
         game.hideButtons();
@@ -136,8 +148,13 @@ const game = {
         game.castle = false;
         game.castle2 = false;
         game.running = true;
+
+        game.stage.units = [];
+
         document.querySelector('#menu').style.display = 'block';
         document.querySelector('.restart-button').style.display = 'none';
+        document.querySelector('.game-results').style.display = 'none';
+        document.querySelector('.buttons').style.display = 'none';
     },
 
     hideButtons() {
@@ -145,6 +162,7 @@ const game = {
     },
 
     showRestartButton() {
+        document.querySelector('.game-results').style.display = 'block';
         document.querySelector('.restart-button').style.display = 'block';
     },
 
@@ -225,15 +243,15 @@ window.addEventListener("load", () => {
 
     document.querySelector('.two_player_btn').onclick = () => {
         game.startGame('twoPlayers');
+        document.getElementById("player-two-buttons").style.display = "initial";
         document.getElementById("menu").style.display = "none";
         document.querySelector(".buttons").style.display = "block";
     };
-
-    document.querySelector('.restart-button').onclick = () => {
+    /*
+    document.querySelectorAll('.restart-button').onclick = () => {
         game.restartGame();
     };
-
-
+    */
     document.getElementById('button_01').onclick = () => {
         let woodcutter = new Woodcutter();
         woodcutter.path = [];

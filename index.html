@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8">
     <title></title>
@@ -36,9 +36,16 @@
             </div>
         </div>
 
-        <div class="restart-button button">
-            <span class="menu_text">RESTART</span>
-            <img src="images/menu_04.png" class="menu_btn">
+        <div class="ingame-menu" style="position: absolute; color: #FFF;" onclick="game.restartGame();">
+            <div class="button restart-button" style="display: inline-block">Restart</div>
+        </div>
+
+        <div class="game-results">
+            <div class="result-data">Player one wins the game!</div>
+            <div class="restart-button button" style="top: 270px; left: 365px; position:absolute;" onclick="game.restartGame();">
+                <span class="menu_text" style="margin-left: 65px; margin-top: 40px;">RESTART</span>
+                <img src="images/menu_04.png" class="menu_btn">
+            </div>
         </div>
 
         <div class="buttons">
@@ -79,7 +86,7 @@
         </div>
     </div>
 </div>
-<h3>Last updated 09.07.19</h3>
+<h3>Last updated 21.07.19</h3>
 <h3>Visit <a href="https://github.com/demyanovs/html5game-two-castles" target="_blank">https://github.com/demyanovs/html5game-two-castles</a> for details.</h3>
 
 <!-- Yandex.Metrika counter -->

@@ -1,6 +1,6 @@
 class Tree {
     constructor() {
-        this.src = 'images/tree3.png';
+        this.src = 'images/tree.png';
         this.x = Math.floor(Math.random() * 650) + 190;
         this.y = 430;
         this.width = 70;
