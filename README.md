@@ -1,7 +1,6 @@
 # Two castles
 
 A browser game written in modern javascript using canvas.
-Currently in development.
 
 ## Rules
 There are two castles. Player needs to destroy his enemy castle by hiring units.
