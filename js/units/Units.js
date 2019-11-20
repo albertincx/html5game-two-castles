@@ -15,8 +15,14 @@ class Unit {
     damage_to_all = false;
     is_busy = false;
 
-    constructor() {
-        this.draw();
+    constructor(id) {
+      if (id) this.id = id
+        /*if (obj) {
+            this.set(obj);
+            return;
+        }
+        */
+      this.draw();
     }
 
     draw() {
@@ -125,9 +131,13 @@ class Unit {
         }
     }
     specialAction() {}
+    set(obj) {
+      Object.keys(obj).map(k => this[k] = obj[k]);
+    }
 }
 
 class Knight extends Unit {
+    name = 'knight'
     src = 'images/units/knight.png';
     src2 = 'images/units/knight2.png';
     width = 37;
@@ -145,7 +155,8 @@ class Knight extends Unit {
     y_param_b = 55;
 }
 
-class Woodcutter extends Unit{
+class Woodcutter extends Unit {
+    name = 'woodcutter'
     src = "images/units/lumb.png";
     src2 = 'images/units/woodcutter2.png';
     src_carry = "images/units/woodcutter_carry.png";
@@ -226,6 +237,7 @@ class Woodcutter extends Unit{
 }
 
 class Archer extends Unit {
+    name = 'archer'
     src = "images/units/archer.png";
     src2 = "images/units/archer2.png";
     width = 35;

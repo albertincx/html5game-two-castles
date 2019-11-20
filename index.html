@@ -10,6 +10,8 @@
     <script src="js/units/Tree.js" type="text/javascript"></script>
     <script src="js/units/Arrow.js" type="text/javascript"></script>
     <script src="js/ai.js" type="text/javascript"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/network.js" type="text/javascript"></script>
     <link rel="stylesheet" href="css/styles.css" type="text/css" media="screen">
 </head>
 <body>
@@ -30,20 +32,28 @@
                 <span class="menu_text">2P</span>
                 <img src="images/menu_03.png" class="menu_btn">
             </div>
-            <div class="credits_btn button">
+            <div class="credits_btn button online_btn">
+                <span class="menu_text" onclick="startOnline(this)">ONLINE</span>
+                <img src="images/menu_04.png" class="menu_btn">
+            </div>
+            <div class="credits_btn button" style="margin-top: 202px;">
                 <span class="menu_text">CREDITS</span>
                 <img src="images/menu_04.png" class="menu_btn">
             </div>
         </div>
 
-        <div class="ingame-menu" style="position: absolute; color: #FFF;" onclick="game.restartGame();">
-            <div class="button restart-button" style="display: inline-block">Restart</div>
+        <div class="ingame-menu" style="position: absolute; color: #FFF;width: 240px;">
+            <div class="button restart-button" style="float:left;display: inline-block" onclick="game.restartGame();">Restart</div>
+            <div class="ingame-menu-online" style="float:right; color: #FFF;" onclick="copyOnlinelink()">
+                <div class="button" style="display: inline-block">Copy Invite Link</div>
+            </div>
         </div>
 
         <div class="game-results">
             <div class="result-data">Player one wins the game!</div>
-            <div class="restart-button button" style="top: 270px; left: 365px; position:absolute;" onclick="game.restartGame();">
-                <span class="menu_text" style="margin-left: 65px; margin-top: 40px;">RESTART</span>
+            <div class="restart-button button" style="top: 270px; left: 365px; position:absolute;"
+                 onclick="game.restartGame();">
+                <span class="menu_text" style="margin-left: 65px; margin-top: 40px;position: absolute;">RESTART</span>
                 <img src="images/menu_04.png" class="menu_btn">
             </div>
         </div>
@@ -87,21 +97,27 @@
     </div>
 </div>
 <h3>Last updated 21.07.19</h3>
-<h3>Visit <a href="https://github.com/demyanovs/html5game-two-castles" target="_blank">https://github.com/demyanovs/html5game-two-castles</a> for details.</h3>
+<h3>Visit <a href="https://github.com/demyanovs/html5game-two-castles" target="_blank">https://github.com/demyanovs/html5game-two-castles</a>
+    for details.</h3>
 
 <!-- Yandex.Metrika counter -->
-<script type="text/javascript" >
-    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+<script type="text/javascript">
+  (function(m, e, t, r, i, k, a) {
+    m[i] = m[i] || function() {(m[i].a = m[i].a || []).push(arguments);};
+    m[i].l = 1 * new Date();
+    k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a);
+  })
+  (window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js', 'ym');
 
-    ym(53267011, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true
-    });
+  ym(53267011, 'init', {
+    clickmap: true,
+    trackLinks: true,
+    accurateTrackBounce: true,
+  });
 </script>
-<noscript><div><img src="https://mc.yandex.ru/watch/53267011" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<noscript>
+    <div><img src="https://mc.yandex.ru/watch/53267011" style="position:absolute; left:-9999px;" alt=""/></div>
+</noscript>
 <!-- /Yandex.Metrika counter -->
 </body>
 </html>
