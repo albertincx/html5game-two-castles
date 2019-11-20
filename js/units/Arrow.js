@@ -9,7 +9,7 @@ class Arrow {
     src = 'images/arrow.png';
     src2 = 'images/arrow2.png';
 
-    constructor(x_start, y_start, x_end, y_end, player = 1, damage, unit_id) {
+    constructor(x_start, y_start, x_end, y_end, player = 1, damage, unit_id, t) {
 
         this.player = player;
         this.damage = damage;
@@ -28,6 +28,7 @@ class Arrow {
         }
 
         this.p1.y = this.p2.y = y_start - 40;//y_end/2;
+        this.t = t
     }
 
     draw() {

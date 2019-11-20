@@ -1,3 +1,7 @@
+const MODE_TWO = 'twoPlayers'
+let logTick = 0;
+let twoPlayerUnit = {};
+
 const game = {
     ai: false,
     arrow: false,
@@ -15,17 +19,17 @@ const game = {
         arrows: [],
         trees: [],
         clouds: [],
-        castle: false,
-        castle2: false
     },
     running: true,
     isGameOver: false,
     requestId: false,
+    isPlayerTwo: false,
 
     // Start initializing objects, preloading assets and display start screen
     init() {
         //this.arrow = new Arrow();
         // Get handler for game canvas and context
+        game.running = false;
         game.canvas = document.getElementById("gamecanvas");
         game.context = game.canvas.getContext("2d");
         game.stage.clouds.push(new Clouds(600, 50, 255, 76, 0.05, 'images/cloud_03.png'));
@@ -34,6 +38,19 @@ const game = {
     },
 
     startGame(mode = '') {
+        game.running = true;
+        if (mode === MODE_TWO) {
+            if (window.modeOnline && !window.onlinegid) {
+                document.querySelector('.ingame-menu-online').style.display = 'block';
+                document.getElementById(
+                    'player-two-buttons').style.display = 'none';
+            }
+            document.getElementById("menu").style.display = "none";
+            document.querySelector(".buttons").style.display = "block";
+        }
+        if (window.modeOnline && window.onlinegid) {
+            this.isPlayerTwo = true;
+        }
         game.isGameOver = false;
         // Castles
         game.castle = new Castle();
@@ -55,12 +72,40 @@ const game = {
 
         document.querySelector('.ingame-menu').style.display = 'block';
         document.querySelector('.restart-button').style.display = 'block';
-
-        game.drawingLoop();
+        if (socket) {
+            if (window.onlinegid) {
+                socket.on('game-event', (payload) => {
+                    game.drawingLoop(payload);
+                });
+            } else {
+                if (socket && !window.commandsHandled) {
+                    window.commandsHandled = true;
+                    socket.on('player-cmd', (command) => {
+                        switch (command) {
+                            case 'a': addWc(game);break;
+                            case 's': addKn(game);break;
+                            case 'd': addAr(game);break;
+                            default: break;
+                        }
+                    });
+                }
+            }
+        }
+        if (!this.isPlayerTwo) {
+            game.drawingLoop();
+        }
     },
 
-    drawingLoop() {
+    drawingLoop(gameStage) {
         game.clearObject();
+        if (!game.running) {
+            return
+        }
+        if (gameStage && typeof gameStage === 'object') {
+          this.fixStage(gameStage)
+          game.stage = gameStage.stage;
+          game.settings = gameStage.settings;
+        }
         if (game.ai) {
             game.ai.makeDecision(game.stage);
         }
@@ -71,8 +116,8 @@ const game = {
         });
 
         // Castles
-        game.castle.draw();
-        game.castle2.draw();
+        game.castle.draw(gameStage && gameStage.castle);
+        game.castle2.draw(gameStage && gameStage.castle2);
 
         // Trees
         game.stage.trees.forEach((tree, i) => {
@@ -80,15 +125,18 @@ const game = {
         });
 
         // Units
+        const units = {}
         for (const id in game.stage.units) {
             const unit = game.stage.units[id];
             unit.draw();
             unit.action();
             unit.specialAction()
+            units[id] = unit
         }
-
+        logTick += 1;
         // Arrows
         game.stage.arrows.forEach((arrow, i) => {
+            if (!arrow) return;
             let unit = game.stage.units[arrow.unit_id];
             if (typeof unit == "undefined") {
                 unit = false;
@@ -116,15 +164,64 @@ const game = {
         }
 
         if (game.running) {
-            requestAnimationFrame(game.drawingLoop);
+            if (this.isPlayerTwo) {
+            } else {
+                window.reqAnimation = requestAnimationFrame(game.drawingLoop);
+            }
         }
-
-        --game.settings.idle_gold_cooldown;
+        if (this.isPlayerTwo) {
+        } else {
+            --game.settings.idle_gold_cooldown;
+        }
         if (game.settings.idle_gold_cooldown <= 0) {
             game.settings.idle_gold_cooldown = game.settings.idle_gold_cooldown_default;
             game.changeGold(1, game.settings.idle_gold);
             game.changeGold(2, game.settings.idle_gold);
         }
+        if (window.modeOnline && !window.onlinegid) {
+            socket.emit('game-event', { ...game, units });
+        }
+    },
+
+    fixStage(gameStage) {
+        gameStage.stage.clouds.forEach((cloud, i) => {
+            gameStage.stage.clouds[i] = new Clouds(cloud.x, cloud.y,
+                cloud.width,
+                cloud.height, cloud.speed, cloud.src);
+        });
+        gameStage.stage.trees.forEach((tree, i) => {
+            gameStage.stage.trees[i] = new Tree(tree.x, tree.y, tree.width,
+                tree.height,
+                tree.growth_rate, tree.time_to_grow, tree.has_grown);
+        });
+        if (gameStage.units) {
+            for (const id in gameStage.units) {
+                let unit1 = gameStage.units[id];
+                let unit;
+                switch (unit1.name) {
+                    case 'knight':
+                        unit = new Knight(unit1.id);
+                        break;
+                    case 'archer':
+                        unit = new Archer(unit1.id);
+                        break;
+                    case 'woodcutter':
+                        unit = new Woodcutter(unit1.id);
+                        break;
+                }
+                if (unit) {
+                    unit.set(unit1)
+                    gameStage.units[id] = unit;
+                }
+            }
+        }
+        gameStage.stage.units = gameStage.units
+        gameStage.stage.arrows.forEach((arrow, i) => {
+            if (!arrow) return;
+            gameStage.stage.arrows[i] = new Arrow(arrow.p0.x, arrow.p0.y,
+                arrow.p3.x, arrow.p3.y, arrow.player, arrow.damage,
+                arrow.unit_id, arrow.t);
+        });
     },
 
     gameOver(win_player) {
@@ -145,16 +242,23 @@ const game = {
     },
 
     restartGame() {
+        window.cancelAnimationFrame(window.reqAnimation);
+        document.querySelector('#menu').style.display = 'block';
+        document.querySelector('.ingame-menu-online').style.display = 'none';
+        document.querySelector('.restart-button').style.display = 'none';
+        document.querySelector('.game-results').style.display = 'none';
+        document.querySelector('.buttons').style.display = 'none';
+        if (window.modeOnline) {
+            game.startGame(MODE_TWO);
+            return
+        }
         game.castle = false;
         game.castle2 = false;
         game.running = true;
 
         game.stage.units = [];
 
-        document.querySelector('#menu').style.display = 'block';
-        document.querySelector('.restart-button').style.display = 'none';
-        document.querySelector('.game-results').style.display = 'none';
-        document.querySelector('.buttons').style.display = 'none';
+
     },
 
     hideButtons() {
@@ -230,6 +334,31 @@ const game = {
     }
 };
 
+function addAr(game) {
+    let archer = new Archer();
+    archer.player = 2;
+    archer.src = archer.src2;
+    archer.x = 900;
+    archer.default_speed = -archer.default_speed;
+    archer.attack_distance = -archer.attack_distance;
+    game.hireUnit(archer);
+}
+function addKn(game) {
+    let knight = new Knight();
+    knight.player = 2;
+    knight.src = knight.src2;
+    knight.x = 900;
+    knight.default_speed = -knight.default_speed;
+    game.hireUnit(knight);
+}
+function addWc(game) {
+    let woodcutter = new Woodcutter();
+    woodcutter.player = 2;
+    woodcutter.src = woodcutter.src2;
+    woodcutter.x = 900;
+    woodcutter.default_speed = -woodcutter.default_speed;
+    game.hireUnit(woodcutter);
+}
 window.addEventListener("load", () => {
     game.init();
 
@@ -267,31 +396,27 @@ window.addEventListener("load", () => {
     };
 
     document.getElementById('button_04').onclick = () => {
-        let woodcutter = new Woodcutter();
-        woodcutter.player = 2;
-        woodcutter.src = woodcutter.src2;
-        woodcutter.x = 900;
-        woodcutter.default_speed = -woodcutter.default_speed;
-        game.hireUnit(woodcutter);
+        if (game.isPlayerTwo) {
+            socket.emit('player-cmd', 'a');
+            return;
+        }
+        addWc(game);
     };
 
     document.getElementById('button_05').onclick = () => {
-        let knight = new Knight();
-        knight.player = 2;
-        knight.src = knight.src2;
-        knight.x = 900;
-        knight.default_speed = -knight.default_speed;
-        game.hireUnit(knight);
+        if (game.isPlayerTwo) {
+            socket.emit('player-cmd', 's');
+            return;
+        }
+        addKn(game);
     };
 
     document.getElementById('button_06').onclick = () => {
-        let archer = new Archer();
-        archer.player = 2;
-        archer.src = archer.src2;
-        archer.x = 900;
-        archer.default_speed = -archer.default_speed;
-        archer.attack_distance = -archer.attack_distance;
-        game.hireUnit(archer);
+        if (game.isPlayerTwo) {
+            socket.emit('player-cmd', 'd');
+            return;
+        }
+        addAr(game);
     };
 
     document.addEventListener("keydown", (event) => {

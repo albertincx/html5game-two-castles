@@ -16,7 +16,8 @@ class Castle {
         this.draw();
     }
 
-    draw() {
+    draw(castleSet = null) {
+        if (castleSet) this.set(castleSet);
         if (this.health <= 0 && !game.isGameOver) {
             game.gameOver(this.player);
         }
@@ -51,6 +52,18 @@ class Castle {
         game.context.fillStyle = '#57d83a';
         game.context.fillRect(this.x + 10, this.y - 30, current_width, height);
         game.context.fillStyle = '#000';
+    }
+    set(castle) {
+        this.coin_height = castle.coin_height;
+        this.coin_width = castle.coin_width;
+        this.default_health = castle.default_health;
+        this.gold = castle.gold;
+        this.health = castle.health;
+        this.height = castle.height;
+        this.player = castle.player;
+        this.width = castle.width;
+        this.x = castle.x;
+        this.y = castle.y;
     }
 }
 

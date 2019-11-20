@@ -1,13 +1,13 @@
 class Tree {
-    constructor() {
+    constructor(x, y = 430, width = 70, height = 100, growth_rate = 1, time_to_grow = 100, has_grown = false) {
         this.src = 'images/tree.png';
-        this.x = Math.floor(Math.random() * 650) + 190;
-        this.y = 430;
-        this.width = 70;
-        this.height = 100;
-        this.has_grown = false;
-        this.time_to_grow = 100;
-        this.growth_rate = 1;
+        this.x = x || Math.floor(Math.random() * 650) + 190;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+        this.has_grown = has_grown;
+        this.time_to_grow = time_to_grow;
+        this.growth_rate = growth_rate;
     }
 
     draw(tree) {
