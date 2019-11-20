@@ -12,6 +12,9 @@ class SocketHelper {
   }
 
   notifyClients(hostId, data, skipId, ev) {
+    if (!this.sockets[hostId]) {
+      return;
+    }
     if (!skipId) {
       let newData = data;
       if (this.sockets[hostId].gameData) {

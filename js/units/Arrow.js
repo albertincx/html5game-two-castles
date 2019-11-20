@@ -28,7 +28,7 @@ class Arrow {
         }
 
         this.p1.y = this.p2.y = y_start - 40;//y_end/2;
-        this.t = t
+        if (t) this.t = t
     }
 
     draw() {
